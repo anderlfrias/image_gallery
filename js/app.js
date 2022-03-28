@@ -1,24 +1,44 @@
-const url = 'https://picsum.photos/v2/list';
-const imagesContainer = document.getElementById('image_container');
+const images = document.querySelectorAll('#image');
+const openImageContainer = document.querySelector('.open_image');
+const currentImage = document.getElementById('current_image');
 
+const close = document.getElementById('close');
+const previous = document.getElementById('previous');
+const next = document.getElementById('next');
 
-console.log("Url: ", url);
-console.log("imagesContainer", imagesContainer);
+let indexImage = 0;
 
-fetch(url)
-.then((resp) => resp.json())
-.then(function(images) {
-    let html = '';
-    console.log("data",images);
-    images.forEach(img => {
-        console.log(img.download_url);
-        html += `<figure class="image">
-                    <img src="${img.download_url}" alt="">
-                </figure>`;
-    });
-    console.log(html);
-    imagesContainer.innerHTML = html;
-})
-    .catch(function(error) {
-    console.log(error);
+const openImage = (e) =>{
+    openImageContainer.classList.remove('hidden');
+    currentImage.src = e.target.src;
+    indexImage = Array.from(images).indexOf(e.target);
+    console.log(e);
+}
+
+const nextImage = () =>{
+    if (indexImage === images.length - 1) {
+        indexImage = -1;
+    }
+
+    currentImage.src = images[indexImage + 1].src;
+    indexImage++;
+}
+
+const previousImage = () =>{
+    if (indexImage === 0) {
+        indexImage = images.length;
+    }
+    currentImage.src = images[indexImage - 1].src;
+    indexImage--;
+}
+
+images.forEach(image => {
+    image.addEventListener('click', openImage)
 });
+
+close.addEventListener('click', () =>{
+    openImageContainer.classList.add('hidden');
+})
+
+next.addEventListener('click', nextImage);
+previous.addEventListener('click', previousImage);
